@@ -11,7 +11,8 @@ Release:        27.0
 Summary:        Task Orchestration and Scheduling service for OpenStack cloud
 License:        ASL 2.0
 URL:            https://launchpad.net/watcher
-Source0:        http://tarballs.openstack.org/%{service}/%{service}-%{upstream_version}.tar.gz
+Source0:        http://tarballs.openstack.org/%{service}/python-%{service}-%{upstream_version}.tar.gz
+
 # Systemd scripts
 Source10:       openstack-watcher-api.service
 Source11:       openstack-watcher-applier.service
