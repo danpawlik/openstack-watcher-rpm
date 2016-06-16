@@ -55,7 +55,6 @@ Requires:       python-paste-deploy >= 1.5.0
 Requires:       python-pbr >= 1.6
 Requires:       python-pecan >= 1.0.0
 Requires:       python-prettytable >= 0.7
-Requires:       python-prettytable < 0.8
 Requires:       python-voluptuous >= 0.8.9
 Requires:       python-ceilometerclient >= 2.2.1
 Requires:       python-cinderclient >= 1.6.0
@@ -70,7 +69,6 @@ Conflicts:      python-novaclient = 2.33.0
 Requires:       python-openstackclient >= 2.1.0
 Requires:       python-six >= 1.9.0
 Requires:       python-sqlalchemy >= 1.0.10
-Requires:       python-sqlalchemy < 1.1.0
 Requires:       python-stevedore >= 1.10.0
 Requires:       python-taskflow >= 1.26.0
 Requires:       python-webob >= 1.2.3
@@ -78,7 +76,14 @@ Requires:       python-wsme >= 0.8
 Requires:       python-setuptools
 
 %description -n python-%{name}
-%{common_desc}
+Watcher provides a flexible and scalable resource optimization service for
+multi-tenant OpenStack-based clouds. Watcher provides a complete optimization
+loop—including everything from a metrics receiver, complex event processor
+and profiler, optimization processor and an action plan applier. This provides
+a robust framework to realize a wide range of cloud optimization goals,
+including the reduction of data center operating costs, increased system
+performance via intelligent virtual machine migration, increased energy
+efficiency—and more!
 .
 This package contains the Python libraries.
 
@@ -92,46 +97,50 @@ Requires(preun):  systemd
 Requires(postun): systemd
 
 %description common
-%{common_desc}
+Watcher provides a flexible and scalable resource optimization service
+for multi-tenant OpenStack-based clouds. Watcher provides a complete
+optimization loop—including everything from a metrics receiver, complex
+event processor and profiler, optimization processor and an action
+plan applier. This provides a robust framework to realize a wide range of
+cloud optimization goals, including the reduction of data center
+operating costs, increased system performance via intelligent virtual
+machine migration, increased energy efficiency—and more!
 .
 This package contains the common files.
 
 %package api
 
-Summary:     OpenStack watcher API service
+Summary:     OpenStack Watcher API service
 Requires:    %{name}-common = %{version}-%{release}
 
 %description api
-OpenStack rest API to the watcher Engine.
+%{common_desc}
 .
 This package contains the ReST API.
-
 
 %package applier
 Summary:     OpenStack Watcher Applier service
 Requires:    %{name}-common = %{version}-%{release}
 
 %description applier
-OpenStack watcher Applier service.
+%{common_desc}
 .
 This package contains the watcher applier, which is one of core services of
 watcher.
-
 
 %package     decision-engine
 Summary:     OpenStack Watcher Decision Engine service
 Requires:    %{name}-common = %{version}-%{release}
 
 %description decision-engine
-OpenStack Watcher Decision Engine service.
+%{common_desc}
 .
-This package contains the watcher Decision Engine, which is one of core
-services of watcher, and which the API servers will use.
-
+This package contains the Watcher Decision Engine, which is one of core
+services of watcher.
 
 %package     all
 Summary:     OpenStack Watcher services
-Requires:    %{name}-common = %{version}-%{release}
+Requires:    %{name}-common = %{version}-%{release}, %{name}-api = %{version}-%{release}, %{name}-applier = %{version}-%{release}, %{name}-decision-engine = %{version}-%{release}
 
 %description all
 OpenStack Watcher All service.
@@ -139,14 +148,12 @@ OpenStack Watcher All service.
 This package contains the watcher api, applier, and decision-engine service as
 an all-in-one process.
 
-
 %package -n     python-watcher-tests
 Summary:        watcher tests
 Requires:       %{name}-common = %{version}-%{release}
 
 %description -n python-watcher-tests
 This package contains the Watcher test files.
-
 
 %package -n     python-watcher-tempest-plugin
 Summary:        Watcher tempest plugin
@@ -193,12 +200,12 @@ This package contains the documentation
 rm -rf {test-,}requirements.txt tools/{pip,test}-requires
 
 %build
-%{__python} setup.py build
+%{__python2} setup.py build
 oslo-config-generator --config-file etc/watcher/watcher-config-generator.conf  \
                       --output-file etc/watcher.conf.sample
 
 %install
-%{__python} setup.py install -O1 --skip-build --root %{buildroot}
+%{__python2} setup.py install -O1 --skip-build --root %{buildroot}
 
 %if 0%{?with_doc}
 export PYTHONPATH="$( pwd ):$PYTHONPATH"
@@ -237,9 +244,6 @@ getent passwd $USERNAME >/dev/null ||
     useradd -r -g $GROUPNAME -G $GROUPNAME -d $HOMEDIR -s /sbin/nologin \
             -c "Satcher Services" $USERNAME
 exit 0
-
-%clean
-rm -rf %{buildroot}
 
 %post api
 %systemd_post openstack-watcher-api.service
