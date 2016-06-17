@@ -8,7 +8,7 @@
 Name:           openstack-watcher
 Version:        0
 Release:        27.0
-Summary:        Task Orchestration and Scheduling service for OpenStack cloud
+Summary:        Openstack Infrastructure Optimization service.
 License:        ASL 2.0
 URL:            https://launchpad.net/watcher
 Source0:        http://tarballs.openstack.org/%{service}/python-%{service}-%{upstream_version}.tar.gz
@@ -37,8 +37,6 @@ Summary:        Watcher Python libraries
 Requires:       python-jsonpatch >= 1.1
 Requires:       python-keystoneauth1 >= 2.1.0
 Requires:       python-keystonemiddleware >= 4.0.0
-Conflicts:      python-keystonemiddleware = 4.1.0
-Conflicts:      python-keystonemiddleware = 4.5.0
 Requires:       python-oslo-concurrency >= 3.8.0
 Requires:       python-oslo-cache >= 1.5.0
 Requires:       python-oslo-config >= 3.9.0
@@ -58,14 +56,10 @@ Requires:       python-prettytable >= 0.7
 Requires:       python-voluptuous >= 0.8.9
 Requires:       python-ceilometerclient >= 2.2.1
 Requires:       python-cinderclient >= 1.6.0
-Conflicts:      python-cinderclient = 1.7.0
 Requires:       python-glanceclient >= 2.0.0
 Requires:       python-keystoneclient >= 1.7.0
-Conflicts:      python-keystoneclient = 1.8.0
-Conflicts:      python-keystoneclient = 2.1.0
 Requires:       python-neutronclient >= 4.2.0
 Requires:       python-novaclient >= 2.29.0
-Conflicts:      python-novaclient = 2.33.0
 Requires:       python-openstackclient >= 2.1.0
 Requires:       python-six >= 1.9.0
 Requires:       python-sqlalchemy >= 1.0.10
@@ -84,7 +78,7 @@ a robust framework to realize a wide range of cloud optimization goals,
 including the reduction of data center operating costs, increased system
 performance via intelligent virtual machine migration, increased energy
 efficiency—and more!
-.
+
 This package contains the Python libraries.
 
 %package common
@@ -105,7 +99,7 @@ plan applier. This provides a robust framework to realize a wide range of
 cloud optimization goals, including the reduction of data center
 operating costs, increased system performance via intelligent virtual
 machine migration, increased energy efficiency—and more!
-.
+
 This package contains the common files.
 
 %package api
@@ -115,7 +109,7 @@ Requires:    %{name}-common = %{version}-%{release}
 
 %description api
 %{common_desc}
-.
+
 This package contains the ReST API.
 
 %package applier
@@ -124,7 +118,7 @@ Requires:    %{name}-common = %{version}-%{release}
 
 %description applier
 %{common_desc}
-.
+
 This package contains the watcher applier, which is one of core services of
 watcher.
 
@@ -134,17 +128,20 @@ Requires:    %{name}-common = %{version}-%{release}
 
 %description decision-engine
 %{common_desc}
-.
+
 This package contains the Watcher Decision Engine, which is one of core
 services of watcher.
 
 %package     all
 Summary:     OpenStack Watcher services
-Requires:    %{name}-common = %{version}-%{release}, %{name}-api = %{version}-%{release}, %{name}-applier = %{version}-%{release}, %{name}-decision-engine = %{version}-%{release}
+Requires:    %{name}-common = %{version}-%{release},
+Requires:    %{name}-api = %{version}-%{release},
+Requires:    %{name}-applier = %{version}-%{release},
+Requires:    %{name}-decision-engine = %{version}-%{release}
 
 %description all
 OpenStack Watcher All service.
-.
+
 This package contains the watcher api, applier, and decision-engine service as
 an all-in-one process.
 
@@ -189,7 +186,7 @@ BuildRequires:  python-debtcollector
 
 %description    doc
 OpenStack Watcher documentaion.
-.
+
 This package contains the documentation
 %endif
 
