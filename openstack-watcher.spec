@@ -5,7 +5,7 @@
 #FIXME: enable with_doc below when we have python-sphinxcontrib-pecanwsme
 %global with_doc 0
 
-Name:           openstack-watcher
+Name:           openstack-%{service}
 Version:        0
 Release:        27.0
 Summary:        Openstack Infrastructure Optimization service.
@@ -31,7 +31,7 @@ BuildRequires:  python-debtcollector-doc
 %description
 %{common_desc}
 
-%package -n     python-%{name}
+%package -n     python-%{service}
 Summary:        Watcher Python libraries
 
 Requires:       python-jsonpatch >= 1.1
@@ -53,7 +53,7 @@ Requires:       python-paste-deploy >= 1.5.0
 Requires:       python-pbr >= 1.6
 Requires:       python-pecan >= 1.0.0
 Requires:       python-prettytable >= 0.7
-Requires:       python-voluptuous >= 0.8.9
+Requires:       python-voluptuous
 Requires:       python-ceilometerclient >= 2.2.1
 Requires:       python-cinderclient >= 1.6.0
 Requires:       python-glanceclient >= 2.0.0
@@ -63,13 +63,13 @@ Requires:       python-novaclient >= 2.29.0
 Requires:       python-openstackclient >= 2.1.0
 Requires:       python-six >= 1.9.0
 Requires:       python-sqlalchemy >= 1.0.10
-Requires:       python-stevedore >= 1.10.0
+Requires:       python-stevedore
 Requires:       python-taskflow >= 1.26.0
 Requires:       python-webob >= 1.2.3
 Requires:       python-wsme >= 0.8
 Requires:       python-setuptools
 
-%description -n python-%{name}
+%description -n python-%{service}
 Watcher provides a flexible and scalable resource optimization service for
 multi-tenant OpenStack-based clouds. Watcher provides a complete optimization
 loop—including everything from a metrics receiver, complex event processor
@@ -85,7 +85,7 @@ This package contains the Python libraries.
 
 Summary: Components common for OpenStack Watcher
 
-Requires: python-%{name} = %{version}-%{release}
+Requires: python-%{service} = %{version}-%{release}
 Requires(post):   systemd
 Requires(preun):  systemd
 Requires(postun): systemd
@@ -131,19 +131,6 @@ Requires:    %{name}-common = %{version}-%{release}
 
 This package contains the Watcher Decision Engine, which is one of core
 services of watcher.
-
-%package     all
-Summary:     OpenStack Watcher services
-Requires:    %{name}-common = %{version}-%{release},
-Requires:    %{name}-api = %{version}-%{release},
-Requires:    %{name}-applier = %{version}-%{release},
-Requires:    %{name}-decision-engine = %{version}-%{release}
-
-%description all
-OpenStack Watcher All service.
-
-This package contains the watcher api, applier, and decision-engine service as
-an all-in-one process.
 
 %package -n     python-watcher-tests
 Summary:        watcher tests
@@ -211,9 +198,9 @@ sphinx-build -b html source build/html
 popd
 %endif
 
-mkdir -p %{buildroot}/etc/watcher/
-mkdir -p %{buildroot}/var/log/watcher
-mkdir -p %{buildroot}/var/run/watcher
+mkdir -p %{buildroot}%{_sysconfdir}/watcher/
+mkdir -p %{buildroot}%{_localstatedir}/log/watcher
+mkdir -p %{buildroot}%{_localstatedir}/run/watcher
 
 install -p -D -m 644 %SOURCE10 %{buildroot}%{_unitdir}/openstack-watcher-api.service
 install -p -D -m 644 %SOURCE11 %{buildroot}%{_unitdir}/openstack-watcher-applier.service
@@ -221,7 +208,7 @@ install -p -D -m 644 %SOURCE12 %{buildroot}%{_unitdir}/openstack-watcher-decisio
 
 install -p -D -m 640 etc/watcher.conf.sample \
                      %{buildroot}%{_sysconfdir}/watcher/watcher.conf
-chmod +x %{buildroot}/usr/bin/watcher*
+chmod +x %{buildroot}%{_bindir}/watcher*
 
 # Remove unneeded in production
 rm -f %{buildroot}/usr/etc/watcher.conf.sample
@@ -263,9 +250,6 @@ exit 0
 %postun decision-engine
 %systemd_postun_with_restart openstack-watcher-decision-engine.service
 
-%files
-%defattr(-,root,root,-)
-
 %files api
 %license LICENSE
 %config(noreplace) %attr(-, root, root) %{_unitdir}/openstack-watcher-api.service
@@ -294,18 +278,18 @@ exit 0
 %config(noreplace) %attr(-, root, root) %{_unitdir}/openstack-watcher-decision-engine.service
 
 
-%files -n python-%{name}
+%files -n python-%{service}
 %license LICENSE
 %{python2_sitelib}/%{service}
 %{python2_sitelib}/python_%{service}-*.egg-info
-%exclude %{python2_sitelib}/watcher/tests
+%exclude %{python2_sitelib}/%{service}/tests
 
-%files -n python-watcher-tests
+%files -n python-%{service}-tests
 %license LICENSE
-%{python2_sitelib}/watcher/tests
+%{python2_sitelib}/%{service}/tests
 
 
-%files -n python-watcher-tempest-plugin
+%files -n python-%{service}-tempest-plugin
 %license LICENSE
 %{python2_sitelib}/watcher_tempest_plugin
 
